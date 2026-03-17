@@ -16,36 +16,29 @@ struct AccountDetailView: View {
     var body: some View {
         List {
             Section {
-                VStack(spacing: 8) {
-                    Image(systemName: account.icon)
-                        .font(.largeTitle)
-                        .foregroundStyle(.tint)
+                accountHeader
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
 
-                    Text(account.name)
-                        .font(.title2.bold())
-
-                    Text(account.accountTypeEnum.displayName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    Text(CurrencyFormatter.displayString(
-                        cents: account.balanceInCents,
-                        currencyCode: account.currency
-                    ))
-                    .font(.title.bold())
-                    .foregroundColor(account.balanceInCents >= 0 ? .primary : .red)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
+            Section {
+                actionButtons
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    .listRowBackground(Color.clear)
             }
 
             Section("Transactions") {
                 if sortedTransactions.isEmpty {
-                    ContentUnavailableView {
-                        Label("No Transactions", systemImage: "list.bullet.rectangle")
-                    } description: {
-                        Text("Add your first transaction to this account.")
+                    VStack(spacing: 8) {
+                        Image(systemName: "list.bullet.rectangle")
+                            .font(.title2)
+                            .foregroundStyle(.tertiary)
+                        Text("No transactions yet")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
                 } else {
                     ForEach(sortedTransactions) { transaction in
                         TransactionRowView(
@@ -56,24 +49,13 @@ struct AccountDetailView: View {
                 }
             }
         }
+        #if os(iOS)
+        .listStyle(.insetGrouped)
+        #endif
         .navigationTitle(account.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button {
-                        showingAddTransaction = true
-                    } label: {
-                        Label("Add Transaction", systemImage: "plus.circle")
-                    }
-
-                    Button {
-                        showingTransfer = true
-                    } label: {
-                        Label("Transfer", systemImage: "arrow.left.arrow.right")
-                    }
-
-                    Divider()
-
                     Button {
                         showingEditAccount = true
                     } label: {
@@ -92,6 +74,60 @@ struct AccountDetailView: View {
         }
         .sheet(isPresented: $showingEditAccount) {
             AccountFormView(account: account)
+        }
+    }
+
+    private var accountHeader: some View {
+        VStack(spacing: 10) {
+            Image(systemName: account.icon)
+                .font(.title.weight(.medium))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(Color.accentColor.gradient)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+            VStack(spacing: 4) {
+                Text(account.name)
+                    .font(.title3.weight(.semibold))
+
+                Text(account.accountTypeEnum.displayName)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Text(CurrencyFormatter.displayString(
+                cents: account.balanceInCents,
+                currencyCode: account.currency
+            ))
+            .font(.system(.title, design: .rounded, weight: .bold))
+            .foregroundColor(account.balanceInCents >= 0 ? .primary : .red)
+            .contentTransition(.numericText())
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+    }
+
+    private var actionButtons: some View {
+        HStack(spacing: 12) {
+            Button {
+                showingAddTransaction = true
+            } label: {
+                Label("Transaction", systemImage: "plus.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 40)
+            }
+            .buttonStyle(.borderedProminent)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            Button {
+                showingTransfer = true
+            } label: {
+                Label("Transfer", systemImage: "arrow.left.arrow.right.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 40)
+            }
+            .buttonStyle(.bordered)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }
 }

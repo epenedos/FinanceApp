@@ -35,6 +35,38 @@ struct TransactionListView: View {
         return results
     }
 
+    /// Group transactions by date section (Today, Yesterday, This Week, etc.)
+    private var groupedTransactions: [(key: String, transactions: [Transaction])] {
+        let calendar = Calendar.current
+        let now = Date.now
+        let today = calendar.startOfDay(for: now)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
+        let weekAgo = calendar.date(byAdding: .day, value: -7, to: today) ?? today
+
+        var groups: [String: [Transaction]] = [:]
+        let groupOrder = ["Today", "Yesterday", "This Week", "Earlier"]
+
+        for transaction in filteredTransactions {
+            let txDate = calendar.startOfDay(for: transaction.date)
+            let key: String
+            if txDate >= today {
+                key = "Today"
+            } else if txDate >= yesterday {
+                key = "Yesterday"
+            } else if txDate >= weekAgo {
+                key = "This Week"
+            } else {
+                key = "Earlier"
+            }
+            groups[key, default: []].append(transaction)
+        }
+
+        return groupOrder.compactMap { key in
+            guard let transactions = groups[key], !transactions.isEmpty else { return nil }
+            return (key: key, transactions: transactions)
+        }
+    }
+
     var body: some View {
         Group {
             if allTransactions.isEmpty {
@@ -53,7 +85,7 @@ struct TransactionListView: View {
                 }
             }
         }
-        .searchable(text: $searchText, prompt: "Search transactions")
+        .searchable(text: $searchText, prompt: "Search by notes or category")
         .sheet(isPresented: $showingAddTransaction) {
             TransactionFormView(transaction: nil)
         }
@@ -90,21 +122,45 @@ struct TransactionListView: View {
         List {
             Section {
                 filterBar
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
             }
 
-            ForEach(filteredTransactions) { transaction in
-                TransactionRowView(
-                    transaction: transaction,
-                    currencyCode: transaction.account?.currency ?? AppConstants.defaultCurrencyCode
-                )
-                .swipeActions(edge: .trailing) {
-                    Button("Delete", role: .destructive) {
-                        transactionToDelete = transaction
-                        showingDeleteAlert = true
+            if filteredTransactions.isEmpty {
+                Section {
+                    VStack(spacing: 8) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.title2)
+                            .foregroundStyle(.tertiary)
+                        Text("No matching transactions")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                }
+            } else {
+                ForEach(groupedTransactions, id: \.key) { group in
+                    Section(group.key) {
+                        ForEach(group.transactions) { transaction in
+                            TransactionRowView(
+                                transaction: transaction,
+                                currencyCode: transaction.account?.currency ?? AppConstants.defaultCurrencyCode
+                            )
+                            .swipeActions(edge: .trailing) {
+                                Button("Delete", role: .destructive) {
+                                    transactionToDelete = transaction
+                                    showingDeleteAlert = true
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+        #if os(iOS)
+        .listStyle(.insetGrouped)
+        #endif
     }
 
     private var filterBar: some View {
@@ -126,7 +182,10 @@ struct TransactionListView: View {
                     action: { filterType = .expense }
                 )
 
-                Divider().frame(height: 20)
+                Rectangle()
+                    .fill(.separator)
+                    .frame(width: 1, height: 20)
+                    .padding(.horizontal, 2)
 
                 Menu {
                     Button("All Accounts") { filterAccount = nil }
@@ -134,20 +193,22 @@ struct TransactionListView: View {
                         Button(account.name) { filterAccount = account }
                     }
                 } label: {
-                    Label(
-                        filterAccount?.name ?? "All Accounts",
-                        systemImage: "building.columns"
+                    HStack(spacing: 4) {
+                        Image(systemName: "building.columns")
+                        Text(filterAccount?.name ?? "All Accounts")
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        filterAccount != nil
+                            ? Color.accentColor.opacity(0.15)
+                            : Color.secondary.opacity(0.15)
                     )
-                    .font(.caption)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(filterAccount != nil ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1))
                     .clipShape(Capsule())
                 }
             }
         }
-        .listRowInsets(EdgeInsets())
-        .listRowBackground(Color.clear)
     }
 
     private func deleteTransaction(_ transaction: Transaction) {
@@ -168,10 +229,15 @@ struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.caption)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(isSelected ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1))
+                .font(.subheadline.weight(.medium))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    isSelected
+                        ? Color.accentColor.opacity(0.15)
+                        : Color.secondary.opacity(0.15)
+                )
+                .foregroundStyle(isSelected ? Color.accentColor : .primary)
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)

@@ -45,31 +45,49 @@ struct CategoryFormView: View {
                 }
 
                 Section("Icon") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6),
+                        spacing: 12
+                    ) {
                         ForEach(iconOptions, id: \.self) { iconName in
                             Button {
                                 icon = iconName
                             } label: {
                                 Image(systemName: iconName)
-                                    .font(.title3)
-                                    .frame(width: 40, height: 40)
-                                    .background(icon == iconName ? Color.accentColor.opacity(0.2) : Color.clear)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .font(.body)
+                                    .frame(maxWidth: .infinity, minHeight: 44)
+                                    .background(
+                                        icon == iconName
+                                            ? Color(hex: colorHex).opacity(0.2)
+                                            : Color.secondary.opacity(0.12)
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .overlay {
+                                        if icon == iconName {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .strokeBorder(Color(hex: colorHex), lineWidth: 2)
+                                        }
+                                    }
                             }
                             .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, 4)
                 }
 
                 Section("Color") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6),
+                        spacing: 12
+                    ) {
                         ForEach(colorOptions, id: \.self) { hex in
                             Button {
                                 colorHex = hex
                             } label: {
                                 Circle()
-                                    .fill(Color(hex: hex))
-                                    .frame(width: 36, height: 36)
+                                    .fill(Color(hex: hex).gradient)
+                                    .frame(maxWidth: .infinity)
+                                    .aspectRatio(1, contentMode: .fit)
                                     .overlay {
                                         if colorHex == hex {
                                             Image(systemName: "checkmark")
@@ -77,25 +95,45 @@ struct CategoryFormView: View {
                                                 .foregroundStyle(.white)
                                         }
                                     }
+                                    .overlay {
+                                        if colorHex == hex {
+                                            Circle()
+                                                .strokeBorder(.white, lineWidth: 2)
+                                        }
+                                    }
                             }
                             .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, 4)
                 }
 
                 Section("Preview") {
-                    HStack(spacing: 12) {
+                    HStack(spacing: 14) {
                         Image(systemName: icon)
+                            .font(.caption.weight(.semibold))
                             .foregroundStyle(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color(hex: colorHex))
+                            .frame(width: 34, height: 34)
+                            .background(Color(hex: colorHex).gradient)
                             .clipShape(Circle())
 
                         Text(name.isEmpty ? "Category Name" : name)
+                            .font(.body.weight(.medium))
                             .foregroundStyle(name.isEmpty ? .secondary : .primary)
+
+                        Spacer()
+
+                        Text(transactionType.displayName)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(Color.secondary.opacity(0.12))
+                            .clipShape(Capsule())
                     }
                 }
             }
+            .formStyle(.grouped)
             .navigationTitle(isEditing ? "Edit Category" : "New Category")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -106,6 +144,7 @@ struct CategoryFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
+                        .fontWeight(.semibold)
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
@@ -123,6 +162,9 @@ struct CategoryFormView: View {
                 }
             }
         }
+        #if os(macOS)
+        .frame(minWidth: 480, idealWidth: 520, minHeight: 580, idealHeight: 640)
+        #endif
     }
 
     private func save() {

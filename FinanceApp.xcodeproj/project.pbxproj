@@ -12,6 +12,7 @@
 		0ED340BE636F82A7FE403E16 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26401E20BC231490FD3FDBAA /* DashboardView.swift */; };
 		0F904C40D1A7D381ED3CE634 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F49BDD3FA0A7D05AA31B6 /* CurrencyFormatter.swift */; };
 		137290AE8511E5A30C8D2C6A /* SpendingByCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992A734E99818CE9E2E0D230 /* SpendingByCategoryView.swift */; };
+		1A3B4C5D6E7F8A9B0C1D2E3F /* SankeyDiagramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B3C4D5E6F7A8B9C0D1E2F /* SankeyDiagramView.swift */; };
 		1D7E2E200B4B9DFFDB70CA24 /* FinanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221B74E5A3978E147141A824 /* FinanceApp.swift */; };
 		2C213950A8BB8B9B14285DF9 /* CategoryFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B66DD7159A431D4682F5CA /* CategoryFormView.swift */; };
 		352E734E7C9D3478D029E37D /* AccountListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922A1E3A401FBC89C7CC373 /* AccountListView.swift */; };
@@ -59,6 +60,7 @@
 		E944B4E946C9300859C0E4FD /* DefaultCategorySeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2154A0C20ECFD1DE2A295CB6 /* DefaultCategorySeeder.swift */; };
 		EABC40144B1628BA20FA7C40 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71036145556962D8CF8DA6BA /* DateExtensions.swift */; };
 		EAC35CEC73059EF78C3F6D58 /* SpendingByCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992A734E99818CE9E2E0D230 /* SpendingByCategoryView.swift */; };
+		EB1A2F3C4D5E6A7B8C9D0E1F /* SankeyDiagramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B3C4D5E6F7A8B9C0D1E2F /* SankeyDiagramView.swift */; };
 		EEFAE6176EAA59BFE1844C09 /* TransactionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC982E2DB527B7B82DD9D2E2 /* TransactionFormView.swift */; };
 		F3A437B701D9D55A7BA0F398 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2BF3E84AB186AC4DC3E106 /* DashboardViewModel.swift */; };
 		F8E9C3A98E5D021752ABB425 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A85E740A87AB032DE8F2903 /* AccountViewModel.swift */; };
@@ -114,6 +116,7 @@
 		DDAB7F5A61C86D2F90BDCB51 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		E1A4D54B054822B31C2F04F3 /* TransactionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRowView.swift; sourceTree = "<group>"; };
 		EAF762C3621015C0856200B4 /* TransferFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferFormView.swift; sourceTree = "<group>"; };
+		FA2B3C4D5E6F7A8B9C0D1E2F /* SankeyDiagramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SankeyDiagramView.swift; sourceTree = "<group>"; };
 		F9080BF6AEE035BDBF614C5B /* FinanceApp-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceApp-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -252,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				26401E20BC231490FD3FDBAA /* DashboardView.swift */,
+				FA2B3C4D5E6F7A8B9C0D1E2F /* SankeyDiagramView.swift */,
 				992A734E99818CE9E2E0D230 /* SpendingByCategoryView.swift */,
 			);
 			path = Dashboard;
@@ -432,6 +436,7 @@
 				420C0B43045C566350802946 /* DefaultCategorySeeder.swift in Sources */,
 				06351BC6B19380D5A9E34EB4 /* FinanceApp.swift in Sources */,
 				6AEE97C763CD8491B6387807 /* FinanceEnums.swift in Sources */,
+				EB1A2F3C4D5E6A7B8C9D0E1F /* SankeyDiagramView.swift in Sources */,
 				EAC35CEC73059EF78C3F6D58 /* SpendingByCategoryView.swift in Sources */,
 				7301720ADC58D0A41019896E /* Transaction.swift in Sources */,
 				D8E255602F522F4D52097FF0 /* TransactionFormView.swift in Sources */,
@@ -465,6 +470,7 @@
 				E944B4E946C9300859C0E4FD /* DefaultCategorySeeder.swift in Sources */,
 				1D7E2E200B4B9DFFDB70CA24 /* FinanceApp.swift in Sources */,
 				84A23B41A1064577235D0167 /* FinanceEnums.swift in Sources */,
+				1A3B4C5D6E7F8A9B0C1D2E3F /* SankeyDiagramView.swift in Sources */,
 				137290AE8511E5A30C8D2C6A /* SpendingByCategoryView.swift in Sources */,
 				999B4922AB6BE9AF8D3CF0F9 /* Transaction.swift in Sources */,
 				EEFAE6176EAA59BFE1844C09 /* TransactionFormView.swift in Sources */,

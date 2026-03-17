@@ -10,7 +10,7 @@ struct TransactionRowView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(displayTitle)
-                    .font(.body)
+                    .font(.subheadline.weight(.medium))
                     .lineLimit(1)
 
                 Text(transaction.date.shortFormatted)
@@ -18,11 +18,13 @@ struct TransactionRowView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Spacer()
+            Spacer(minLength: 4)
 
             Text(formattedAmount)
-                .font(.body.bold())
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
                 .foregroundStyle(amountColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .padding(.vertical, 2)
     }
@@ -36,10 +38,10 @@ struct TransactionRowView: View {
             : (transaction.category?.color ?? .accentColor)
 
         return Image(systemName: iconName)
-            .font(.body)
+            .font(.caption.weight(.semibold))
             .foregroundStyle(.white)
-            .frame(width: 32, height: 32)
-            .background(iconColor)
+            .frame(width: 34, height: 34)
+            .background(iconColor.gradient)
             .clipShape(Circle())
     }
 

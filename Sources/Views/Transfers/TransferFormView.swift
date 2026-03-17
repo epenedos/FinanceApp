@@ -29,6 +29,7 @@ struct TransferFormView: View {
                         Text("Select Account").tag(nil as Account?)
                         ForEach(accounts) { account in
                             HStack {
+                                Image(systemName: account.icon)
                                 Text(account.name)
                                 Spacer()
                                 Text(CurrencyFormatter.displayString(
@@ -52,15 +53,23 @@ struct TransferFormView: View {
                 }
 
                 Section("Amount") {
-                    TextField("Amount", text: $amountText)
-                        #if os(iOS)
-                        .keyboardType(.decimalPad)
-                        #endif
+                    HStack(spacing: 8) {
+                        if let source = sourceAccount {
+                            Text(SupportedCurrency(rawValue: source.currency)?.symbol ?? "$")
+                                .font(.title2.weight(.medium))
+                                .foregroundStyle(.secondary)
+                        }
+                        TextField("0.00", text: $amountText)
+                            .font(.system(.title2, design: .rounded, weight: .medium))
+                            #if os(iOS)
+                            .keyboardType(.decimalPad)
+                            #endif
+                    }
 
                     if let source = sourceAccount, let dest = destinationAccount,
                        source.currency != dest.currency {
                         Label(
-                            "Accounts use different currencies. The amount will be applied as-is to both.",
+                            "Different currencies — amount applied as-is to both accounts.",
                             systemImage: "exclamationmark.triangle"
                         )
                         .font(.caption)
@@ -70,9 +79,11 @@ struct TransferFormView: View {
 
                 Section("Details") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
-                    TextField("Notes (optional)", text: $notes)
+                    TextField("Add a note (optional)", text: $notes, axis: .vertical)
+                        .lineLimit(2...4)
                 }
             }
+            .formStyle(.grouped)
             .navigationTitle("Transfer")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -83,6 +94,7 @@ struct TransferFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Transfer") { executeTransfer() }
+                        .fontWeight(.semibold)
                         .disabled(!isFormValid)
                 }
             }
@@ -97,6 +109,9 @@ struct TransferFormView: View {
                 }
             }
         }
+        #if os(macOS)
+        .frame(minWidth: 460, idealWidth: 500, minHeight: 420, idealHeight: 480)
+        #endif
     }
 
     private var isFormValid: Bool {

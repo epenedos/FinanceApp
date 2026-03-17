@@ -9,6 +9,10 @@ struct AccountListView: View {
     @State private var showingDeleteAlert = false
     @State private var accountToDelete: Account?
 
+    private var totalBalance: Int64 {
+        accounts.reduce(Int64(0)) { $0 + $1.balanceInCents }
+    }
+
     var body: some View {
         Group {
             if accounts.isEmpty {
@@ -60,29 +64,63 @@ struct AccountListView: View {
 
     private var accountList: some View {
         List {
-            ForEach(accounts) { account in
-                NavigationLink {
-                    AccountDetailView(account: account)
-                } label: {
-                    AccountRowView(account: account)
-                }
-                .contextMenu {
-                    Button("Edit") {
-                        accountToEdit = account
+            Section {
+                totalBalanceHeader
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
+
+            Section {
+                ForEach(accounts) { account in
+                    NavigationLink {
+                        AccountDetailView(account: account)
+                    } label: {
+                        AccountRowView(account: account)
                     }
-                    Button("Delete", role: .destructive) {
-                        accountToDelete = account
-                        showingDeleteAlert = true
+                    .contextMenu {
+                        Button {
+                            accountToEdit = account
+                        } label: {
+                            Label("Edit", systemImage: "pencil")
+                        }
+                        Button(role: .destructive) {
+                            accountToDelete = account
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
-                }
-                .swipeActions(edge: .trailing) {
-                    Button("Delete", role: .destructive) {
-                        accountToDelete = account
-                        showingDeleteAlert = true
+                    .swipeActions(edge: .trailing) {
+                        Button("Delete", role: .destructive) {
+                            accountToDelete = account
+                            showingDeleteAlert = true
+                        }
                     }
                 }
             }
         }
+        #if os(iOS)
+        .listStyle(.insetGrouped)
+        #endif
+    }
+
+    private var totalBalanceHeader: some View {
+        VStack(spacing: 4) {
+            Text("Total Balance")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.5)
+
+            Text(CurrencyFormatter.displayString(
+                cents: totalBalance,
+                currencyCode: AppConstants.defaultCurrencyCode
+            ))
+            .font(.system(.title, design: .rounded, weight: .bold))
+            .foregroundColor(totalBalance >= 0 ? .primary : .red)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
     }
 
     private func deleteAccount(_ account: Account) {
@@ -99,29 +137,33 @@ struct AccountRowView: View {
     let account: Account
 
     var body: some View {
-        HStack {
+        HStack(spacing: 14) {
             Image(systemName: account.icon)
-                .font(.title2)
-                .foregroundStyle(.tint)
-                .frame(width: 36, height: 36)
+                .font(.body.weight(.medium))
+                .foregroundStyle(.white)
+                .frame(width: 40, height: 40)
+                .background(Color.accentColor.gradient)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(account.name)
-                    .font(.headline)
+                    .font(.body.weight(.medium))
                 Text(account.accountTypeEnum.displayName)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
-            Spacer()
+            Spacer(minLength: 4)
 
             Text(CurrencyFormatter.displayString(
                 cents: account.balanceInCents,
                 currencyCode: account.currency
             ))
-            .font(.headline)
+            .font(.system(.body, design: .rounded, weight: .semibold))
             .foregroundColor(account.balanceInCents >= 0 ? .primary : .red)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 }

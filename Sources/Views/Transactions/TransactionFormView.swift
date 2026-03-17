@@ -29,28 +29,44 @@ struct TransactionFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Type") {
+                Section {
                     Picker("Transaction Type", selection: $transactionType) {
                         ForEach(TransactionType.allCases) { type in
                             Text(type.displayName).tag(type)
                         }
                     }
                     .pickerStyle(.segmented)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .onChange(of: transactionType) { _, _ in
                         selectedCategory = nil
                     }
                 }
 
-                Section("Details") {
-                    TextField("Amount", text: $amountText)
-                        #if os(iOS)
-                        .keyboardType(.decimalPad)
-                        #endif
+                Section("Amount") {
+                    HStack(spacing: 8) {
+                        if let account = selectedAccount {
+                            Text(SupportedCurrency(rawValue: account.currency)?.symbol ?? "$")
+                                .font(.title2.weight(.medium))
+                                .foregroundStyle(.secondary)
+                        }
+                        TextField("0.00", text: $amountText)
+                            .font(.system(.title2, design: .rounded, weight: .medium))
+                            #if os(iOS)
+                            .keyboardType(.decimalPad)
+                            #endif
+                    }
+                }
 
+                Section("Details") {
                     Picker("Account", selection: $selectedAccount) {
                         Text("Select Account").tag(nil as Account?)
                         ForEach(accounts) { account in
-                            Text(account.name).tag(account as Account?)
+                            HStack {
+                                Image(systemName: account.icon)
+                                Text(account.name)
+                            }
+                            .tag(account as Account?)
                         }
                     }
 
@@ -73,9 +89,11 @@ struct TransactionFormView: View {
                 }
 
                 Section("Notes") {
-                    TextField("Notes (optional)", text: $notes)
+                    TextField("Add a note (optional)", text: $notes, axis: .vertical)
+                        .lineLimit(2...4)
                 }
             }
+            .formStyle(.grouped)
             .navigationTitle(isEditing ? "Edit Transaction" : "New Transaction")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -86,6 +104,7 @@ struct TransactionFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
+                        .fontWeight(.semibold)
                         .disabled(!isFormValid)
                 }
             }
@@ -96,6 +115,9 @@ struct TransactionFormView: View {
             }
             .onAppear { populateFields() }
         }
+        #if os(macOS)
+        .frame(minWidth: 460, idealWidth: 500, minHeight: 460, idealHeight: 520)
+        #endif
     }
 
     private var isFormValid: Bool {

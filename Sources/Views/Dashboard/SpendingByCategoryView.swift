@@ -41,7 +41,7 @@ struct SpendingByCategoryView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 periodPicker
 
                 if categoryData.isEmpty {
@@ -51,11 +51,13 @@ struct SpendingByCategoryView: View {
                         Text("No expense data for the selected period.")
                     }
                 } else {
+                    totalCard
                     chartSection
                     categoryBreakdown
                 }
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.bottom, 24)
         }
         .navigationTitle("Spending by Category")
     }
@@ -69,14 +71,37 @@ struct SpendingByCategoryView: View {
         .pickerStyle(.segmented)
     }
 
+    private var totalCard: some View {
+        VStack(spacing: 4) {
+            Text("Total Spending")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.5)
+
+            Text(CurrencyFormatter.displayString(
+                cents: totalSpending,
+                currencyCode: AppConstants.defaultCurrencyCode
+            ))
+            .font(.system(.title2, design: .rounded, weight: .bold))
+            .foregroundStyle(.red)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background {
+            RoundedRectangle(cornerRadius: 14)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
     private var chartSection: some View {
         Chart(categoryData, id: \.category.id) { item in
             SectorMark(
                 angle: .value("Amount", item.totalCents),
-                innerRadius: .ratio(0.5),
-                angularInset: 1
+                innerRadius: .ratio(0.55),
+                angularInset: 1.5
             )
-            .foregroundStyle(item.category.color)
+            .foregroundStyle(item.category.color.gradient)
             .annotation(position: .overlay) {
                 let percentage = Double(item.totalCents) / Double(max(totalSpending, 1)) * 100
                 if percentage >= 8 {
@@ -86,42 +111,59 @@ struct SpendingByCategoryView: View {
                 }
             }
         }
-        .frame(height: 240)
+        .frame(height: 260)
+        .padding(.vertical, 8)
     }
 
     private var categoryBreakdown: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 2) {
             ForEach(categoryData, id: \.category.id) { item in
-                HStack(spacing: 12) {
+                let percentage = Double(item.totalCents) / Double(max(totalSpending, 1)) * 100
+
+                HStack(spacing: 14) {
                     Image(systemName: item.category.icon)
+                        .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 28, height: 28)
-                        .background(item.category.color)
+                        .frame(width: 34, height: 34)
+                        .background(item.category.color.gradient)
                         .clipShape(Circle())
 
-                    Text(item.category.name)
-                        .font(.body)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(item.category.name)
+                            .font(.subheadline.weight(.medium))
 
-                    Spacer()
+                        GeometryReader { geometry in
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(item.category.color.gradient)
+                                .frame(
+                                    width: geometry.size.width * CGFloat(percentage / 100),
+                                    height: 4
+                                )
+                        }
+                        .frame(height: 4)
+                    }
+
+                    Spacer(minLength: 4)
 
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(CurrencyFormatter.displayString(
                             cents: item.totalCents,
                             currencyCode: AppConstants.defaultCurrencyCode
                         ))
-                        .font(.body.bold())
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
 
-                        let percentage = Double(item.totalCents) / Double(max(totalSpending, 1)) * 100
                         Text("\(Int(percentage))%")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding(.vertical, 6)
-                .padding(.horizontal, 12)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
             }
+        }
+        .background {
+            RoundedRectangle(cornerRadius: 14)
+                .fill(.ultraThinMaterial)
         }
     }
 }

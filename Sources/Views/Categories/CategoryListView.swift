@@ -18,8 +18,7 @@ struct CategoryListView: View {
         List {
             Section("Expense Categories") {
                 if expenseCategories.isEmpty {
-                    Text("No expense categories")
-                        .foregroundStyle(.secondary)
+                    emptyRow(message: "No expense categories")
                 } else {
                     ForEach(expenseCategories) { category in
                         CategoryRow(category: category)
@@ -33,8 +32,7 @@ struct CategoryListView: View {
 
             Section("Income Categories") {
                 if incomeCategories.isEmpty {
-                    Text("No income categories")
-                        .foregroundStyle(.secondary)
+                    emptyRow(message: "No income categories")
                 } else {
                     ForEach(incomeCategories) { category in
                         CategoryRow(category: category)
@@ -46,6 +44,9 @@ struct CategoryListView: View {
                 }
             }
         }
+        #if os(iOS)
+        .listStyle(.insetGrouped)
+        #endif
         .navigationTitle("Categories")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -63,34 +64,47 @@ struct CategoryListView: View {
             CategoryFormView(category: category)
         }
     }
+
+    private func emptyRow(message: String) -> some View {
+        Text(message)
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical, 12)
+    }
 }
 
 struct CategoryRow: View {
     let category: Category
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
             Image(systemName: category.icon)
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
-                .frame(width: 28, height: 28)
-                .background(category.color)
+                .frame(width: 34, height: 34)
+                .background(category.color.gradient)
                 .clipShape(Circle())
 
             Text(category.name)
                 .font(.body)
 
-            Spacer()
+            Spacer(minLength: 4)
 
             if category.isDefault {
                 Text("Default")
-                    .font(.caption2)
+                    .font(.caption2.weight(.medium))
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color.secondary.opacity(0.1))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.secondary.opacity(0.12))
                     .clipShape(Capsule())
             }
+
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 }

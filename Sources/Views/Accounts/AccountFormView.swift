@@ -27,6 +27,7 @@ struct AccountFormView: View {
             Form {
                 Section("Account Details") {
                     TextField("Account Name", text: $name)
+                        .font(.body)
 
                     Picker("Account Type", selection: $accountType) {
                         ForEach(AccountType.allCases) { type in
@@ -42,22 +43,63 @@ struct AccountFormView: View {
                 }
 
                 Section("Icon") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6),
+                        spacing: 12
+                    ) {
                         ForEach(iconOptions, id: \.self) { iconName in
                             Button {
                                 icon = iconName
                             } label: {
                                 Image(systemName: iconName)
-                                    .font(.title2)
-                                    .frame(width: 44, height: 44)
-                                    .background(icon == iconName ? Color.accentColor.opacity(0.2) : Color.clear)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .font(.title3)
+                                    .frame(maxWidth: .infinity, minHeight: 48)
+                                    .background(
+                                        icon == iconName
+                                            ? Color.accentColor.opacity(0.2)
+                                            : Color.secondary.opacity(0.12)
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .overlay {
+                                        if icon == iconName {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .strokeBorder(Color.accentColor, lineWidth: 2)
+                                        }
+                                    }
                             }
                             .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, 4)
+                }
+
+                Section("Preview") {
+                    HStack(spacing: 14) {
+                        Image(systemName: icon)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.white)
+                            .frame(width: 40, height: 40)
+                            .background(Color.accentColor.gradient)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(name.isEmpty ? "Account Name" : name)
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(name.isEmpty ? .secondary : .primary)
+                            Text(accountType.displayName)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Text(currency.symbol)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
+            .formStyle(.grouped)
             .navigationTitle(isEditing ? "Edit Account" : "New Account")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -68,6 +110,7 @@ struct AccountFormView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
+                        .fontWeight(.semibold)
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
@@ -85,6 +128,9 @@ struct AccountFormView: View {
                 }
             }
         }
+        #if os(macOS)
+        .frame(minWidth: 460, idealWidth: 500, minHeight: 480, idealHeight: 540)
+        #endif
     }
 
     private func save() {

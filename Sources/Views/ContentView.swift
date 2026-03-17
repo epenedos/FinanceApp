@@ -3,9 +3,39 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
 
     var body: some View {
         #if os(iOS)
+        if horizontalSizeClass == .regular {
+            sidebarLayout
+        } else {
+            compactLayout
+        }
+        #else
+        sidebarLayout
+        #endif
+    }
+
+    // MARK: - Sidebar Layout (macOS + iPad)
+
+    private var sidebarLayout: some View {
+        NavigationSplitView {
+            SidebarView()
+        } detail: {
+            DashboardView()
+        }
+        #if os(macOS)
+        .frame(minWidth: 700, minHeight: 500)
+        #endif
+    }
+
+    // MARK: - Compact Layout (iPhone)
+
+    #if os(iOS)
+    private var compactLayout: some View {
         TabView {
             NavigationStack {
                 DashboardView()
@@ -27,18 +57,12 @@ struct ContentView: View {
             }
             .tabItem { Label("Categories", systemImage: "tag") }
         }
-        #else
-        NavigationSplitView {
-            SidebarView()
-        } detail: {
-            DashboardView()
-        }
-        .frame(minWidth: 700, minHeight: 500)
-        #endif
     }
+    #endif
 }
 
-#if os(macOS)
+// MARK: - Sidebar (shared between macOS and iPadOS)
+
 struct SidebarView: View {
     var body: some View {
         List {
@@ -65,9 +89,24 @@ struct SidebarView: View {
             } label: {
                 Label("Categories", systemImage: "tag")
             }
+
+            Section("Charts") {
+                NavigationLink {
+                    SankeyDiagramView()
+                } label: {
+                    Label("Money Flow", systemImage: "chart.bar.xaxis")
+                }
+
+                NavigationLink {
+                    SpendingByCategoryView()
+                } label: {
+                    Label("Spending", systemImage: "chart.pie")
+                }
+            }
         }
         .navigationTitle("Finance")
+        #if os(macOS)
         .listStyle(.sidebar)
+        #endif
     }
 }
-#endif
