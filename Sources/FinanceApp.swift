@@ -1,10 +1,13 @@
 import SwiftUI
 import SwiftData
-import CoreData
 
 @main
 struct FinanceApp: App {
     let modelContainer: ModelContainer
+
+    @State private var authManager = AuthManager()
+    @State private var networkMonitor = NetworkMonitor()
+    @State private var syncEngine: SyncEngine?
 
     init() {
         do {
@@ -12,21 +15,18 @@ struct FinanceApp: App {
                 Account.self,
                 Transaction.self,
                 Category.self,
+                SyncMetadata.self,
             ])
 
             let configuration = ModelConfiguration(
                 schema: schema,
-                isStoredInMemoryOnly: false,
-                cloudKitDatabase: .automatic
+                isStoredInMemoryOnly: false
             )
 
             modelContainer = try ModelContainer(
                 for: schema,
                 configurations: [configuration]
             )
-
-            // Enable persistent history tracking for remote change detection
-            setupRemoteChangeNotifications()
         } catch {
             fatalError("Failed to create ModelContainer: \(error)")
         }
@@ -34,45 +34,63 @@ struct FinanceApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .onAppear {
+            RootView(
+                authManager: authManager,
+                networkMonitor: networkMonitor,
+                onAuthenticated: { startSync() },
+                onSeedCategories: {
                     DefaultCategorySeeder.seedIfNeeded(
                         modelContext: modelContainer.mainContext
                     )
                 }
+            )
         }
         .modelContainer(modelContainer)
     }
 
-    private func setupRemoteChangeNotifications() {
-        // NSPersistentStoreRemoteChange fires when CloudKit merges
-        // remote data into the local persistent store
-        NotificationCenter.default.addObserver(
-            forName: .NSPersistentStoreRemoteChange,
-            object: nil,
-            queue: .main
-        ) { _ in
-            // Merge remote changes into the main context so @Query updates
-            Task { @MainActor in
-                modelContainer.mainContext.processPendingChanges()
+    private func startSync() {
+        guard syncEngine == nil else { return }
+        let engine = SyncEngine(
+            modelContainer: modelContainer,
+            authManager: authManager,
+            networkMonitor: networkMonitor
+        )
+        syncEngine = engine
+        engine.start()
+
+        // Migrate existing local data on first sign-in
+        Task {
+            await engine.migrateLocalDataToSupabase()
+        }
+    }
+}
+
+// MARK: - Root View
+
+/// Decides whether to show the sign-in screen or the main app content
+/// based on authentication state.
+private struct RootView: View {
+    let authManager: AuthManager
+    let networkMonitor: NetworkMonitor
+    let onAuthenticated: () -> Void
+    let onSeedCategories: () -> Void
+
+    var body: some View {
+        Group {
+            if authManager.isLoading {
+                ProgressView("Loading…")
+            } else if authManager.isAuthenticated {
+                ContentView()
+                    .onAppear {
+                        onSeedCategories()
+                        onAuthenticated()
+                    }
+            } else {
+                SignInView(authManager: authManager)
             }
         }
-
-        // Also listen for CloudKit container events for error logging
-        NotificationCenter.default.addObserver(
-            forName: NSPersistentCloudKitContainer.eventChangedNotification,
-            object: nil,
-            queue: .main
-        ) { notification in
-            guard let event = notification.userInfo?[
-                NSPersistentCloudKitContainer.eventNotificationUserInfoKey
-            ] as? NSPersistentCloudKitContainer.Event else {
-                return
-            }
-
-            if let error = event.error {
-                print("CloudKit sync error: \(error.localizedDescription)")
-            }
+        .task {
+            await authManager.restoreSession()
         }
     }
 }
