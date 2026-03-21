@@ -43,6 +43,8 @@
 		6C486BC8EF541BB0A6BD883F /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30291B0B5A4EE798BF018BCA /* Category.swift */; };
 		7301720ADC58D0A41019896E /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAB7F5A61C86D2F90BDCB51 /* Transaction.swift */; };
 		735D34967E74D4C3250D7953 /* SyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E864D998BCE9A5B139A9C20 /* SyncMetadata.swift */; };
+		75A1F6A5FBDF33E336296B04 /* SyncNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033E700F21E7EECE9D67EEC /* SyncNotification.swift */; };
+		775BC8AB86F17D0D3605D578 /* SyncNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033E700F21E7EECE9D67EEC /* SyncNotification.swift */; };
 		79BC6BCA209688107CD14316 /* AccountFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EAE2122E580270E6589F42A /* AccountFormView.swift */; };
 		7A8AD50E4E9326E7DE22FC63 /* SyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E864D998BCE9A5B139A9C20 /* SyncMetadata.swift */; };
 		84A23B41A1064577235D0167 /* FinanceEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EAA3B252A56C9684A046F01 /* FinanceEnums.swift */; };
@@ -131,7 +133,7 @@
 		96B4DCFA088617AB728946AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		992A734E99818CE9E2E0D230 /* SpendingByCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingByCategoryView.swift; sourceTree = "<group>"; };
 		9A85E740A87AB032DE8F2903 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
-		9B42C8C6132B03207BCA72B6 /* FinanceApp-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B42C8C6132B03207BCA72B6 /* FinanceApp-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "FinanceApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D21D56850CF85FAB1133DF2 /* CurrencyExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyExtensions.swift; sourceTree = "<group>"; };
 		A6B8C3B26E37C06A28AC5013 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		A77AF046245108EC8F0FCB5E /* AccountDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDetailView.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		DDAB7F5A61C86D2F90BDCB51 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		E1A4D54B054822B31C2F04F3 /* TransactionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRowView.swift; sourceTree = "<group>"; };
 		EAF762C3621015C0856200B4 /* TransferFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferFormView.swift; sourceTree = "<group>"; };
+		F033E700F21E7EECE9D67EEC /* SyncNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNotification.swift; sourceTree = "<group>"; };
 		F9080BF6AEE035BDBF614C5B /* FinanceApp-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FinanceApp-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -248,6 +251,7 @@
 				351D8BF8152B5DBFBD50BB20 /* SupabaseManager.swift */,
 				A6B8C3B26E37C06A28AC5013 /* SyncEngine.swift */,
 				7E864D998BCE9A5B139A9C20 /* SyncMetadata.swift */,
+				F033E700F21E7EECE9D67EEC /* SyncNotification.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -440,6 +444,12 @@
 					179D7A42FC947BCA1864ABE5 = {
 						DevelopmentTeam = "";
 					};
+					93228A74122FF530C5862FB4 = {
+						DevelopmentTeam = "";
+					};
+					AA44AD860E97EC2AD74ED23D = {
+						DevelopmentTeam = "";
+					};
 					E110A3AEDF6E1E2D3FA75FE6 = {
 						DevelopmentTeam = "";
 					};
@@ -530,6 +540,7 @@
 				DE8402B7FD542CAF6646E107 /* SupabaseManager.swift in Sources */,
 				21C25963DD2D0F1F621B773F /* SyncEngine.swift in Sources */,
 				735D34967E74D4C3250D7953 /* SyncMetadata.swift in Sources */,
+				775BC8AB86F17D0D3605D578 /* SyncNotification.swift in Sources */,
 				7301720ADC58D0A41019896E /* Transaction.swift in Sources */,
 				D8E255602F522F4D52097FF0 /* TransactionFormView.swift in Sources */,
 				915BB4586AA9C91A8069C93E /* TransactionListView.swift in Sources */,
@@ -572,6 +583,7 @@
 				0479D3DA656AB2ACB0D022FD /* SupabaseManager.swift in Sources */,
 				3BFA175B8C2AA04F6325E4CC /* SyncEngine.swift in Sources */,
 				7A8AD50E4E9326E7DE22FC63 /* SyncMetadata.swift in Sources */,
+				75A1F6A5FBDF33E336296B04 /* SyncNotification.swift in Sources */,
 				999B4922AB6BE9AF8D3CF0F9 /* Transaction.swift in Sources */,
 				EEFAE6176EAA59BFE1844C09 /* TransactionFormView.swift in Sources */,
 				632DD410BDBB1D8FAFAA6CE9 /* TransactionListView.swift in Sources */,
@@ -614,7 +626,6 @@
 				CODE_SIGN_ENTITLEMENTS = FinanceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MV45ATG98E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
@@ -623,7 +634,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.eduardopenedos.FinanceApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.financeapp.FinanceApp;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -720,7 +731,6 @@
 				CODE_SIGN_ENTITLEMENTS = FinanceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MV45ATG98E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
@@ -729,7 +739,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.eduardopenedos.FinanceApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.financeapp.FinanceApp;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -777,11 +787,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FinanceApp.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MV45ATG98E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
@@ -790,8 +797,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.eduardopenedos.FinanceApp;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.financeapp.FinanceApp;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -804,11 +810,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FinanceApp.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MV45ATG98E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_GENERATION_MODE = GeneratedFile;
@@ -817,8 +820,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.eduardopenedos.FinanceApp;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.financeapp.FinanceApp;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;

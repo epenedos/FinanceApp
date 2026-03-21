@@ -24,6 +24,7 @@ final class AccountViewModel {
         )
         modelContext.insert(account)
         try modelContext.save()
+        SyncNotification.post(entityType: .account, entityId: account.id, changeType: .insert)
     }
 
     func updateAccount(
@@ -38,11 +39,14 @@ final class AccountViewModel {
         account.currency = currency.rawValue
         account.icon = icon
         try modelContext.save()
+        SyncNotification.post(entityType: .account, entityId: account.id, changeType: .update)
     }
 
     func deleteAccount(_ account: Account) throws {
+        let accountId = account.id
         modelContext.delete(account)
         try modelContext.save()
+        SyncNotification.post(entityType: .account, entityId: accountId, changeType: .delete)
     }
 
     func formattedBalance(for account: Account) -> String {
