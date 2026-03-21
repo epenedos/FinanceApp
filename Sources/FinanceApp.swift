@@ -52,6 +52,24 @@ struct FinanceApp: App {
     private func signOut() async {
         syncEngine?.stop()
         syncEngine = nil
+
+        // Clear all local SwiftData records
+        let context = modelContainer.mainContext
+        do {
+            try context.delete(model: SyncMetadata.self)
+            try context.delete(model: Transaction.self)
+            try context.delete(model: Account.self)
+            try context.delete(model: Category.self)
+            try context.save()
+        } catch {
+            print("Failed to clear local data: \(error)")
+        }
+
+        // Reset sync/migration flags so next sign-in starts fresh
+        UserDefaults.standard.removeObject(forKey: AppConstants.lastSyncTimestampKey)
+        UserDefaults.standard.removeObject(forKey: AppConstants.migrationCompletedKey)
+        UserDefaults.standard.removeObject(forKey: AppConstants.categorySeededKey)
+
         await authManager.signOut()
     }
 
