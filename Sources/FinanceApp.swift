@@ -44,8 +44,15 @@ struct FinanceApp: App {
                     )
                 }
             )
+            .environment(\.signOutAction, signOut)
         }
         .modelContainer(modelContainer)
+    }
+
+    private func signOut() async {
+        syncEngine?.stop()
+        syncEngine = nil
+        await authManager.signOut()
     }
 
     private func startSync() {
