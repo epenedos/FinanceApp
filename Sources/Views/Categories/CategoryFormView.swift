@@ -177,6 +177,8 @@ struct CategoryFormView: View {
                 category.icon = icon
                 category.colorHex = colorHex
                 category.transactionType = transactionType.rawValue
+                try modelContext.save()
+                SyncNotification.post(entityType: .category, entityId: category.id, changeType: .update)
             } else {
                 let newCategory = Category(
                     name: trimmedName,
@@ -185,8 +187,9 @@ struct CategoryFormView: View {
                     transactionType: transactionType
                 )
                 modelContext.insert(newCategory)
+                try modelContext.save()
+                SyncNotification.post(entityType: .category, entityId: newCategory.id, changeType: .insert)
             }
-            try modelContext.save()
             dismiss()
         } catch {
             errorMessage = "Failed to save category: \(error.localizedDescription)"

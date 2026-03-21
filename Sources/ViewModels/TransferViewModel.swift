@@ -48,6 +48,11 @@ final class TransferViewModel {
         modelContext.insert(debit)
         modelContext.insert(credit)
         try modelContext.save()
+
+        SyncNotification.post(changes: [
+            .init(entityType: .transaction, entityId: debit.id, changeType: .insert),
+            .init(entityType: .transaction, entityId: credit.id, changeType: .insert),
+        ])
     }
 
     private func findOrCreateTransferCategory(type: TransactionType) throws -> Category {

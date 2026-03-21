@@ -1,6 +1,5 @@
 import Foundation
 import SwiftData
-import CoreData
 import Supabase
 import Observation
 
@@ -79,28 +78,20 @@ final class SyncEngine {
 
     private func observeLocalSaves() {
         saveObserver = NotificationCenter.default.addObserver(
-            forName: .NSManagedObjectContextDidSave,
+            forName: SyncNotification.didSaveLocalData,
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            // Extract data on the calling thread before crossing isolation
-            let insertedObjects = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject>
-            let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>
-            let deletedObjects = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>
-
-            let inserted = Self.extractEntityIds(from: insertedObjects, changeType: .insert)
-            let updated = Self.extractEntityIds(from: updatedObjects, changeType: .update)
-            let deleted = Self.extractEntityIds(from: deletedObjects, changeType: .delete)
-
-            let allChanges = inserted + updated + deleted
+            let changes = notification.userInfo?[SyncNotification.changesKey]
+                as? [SyncNotification.Change] ?? []
 
             Task { @MainActor in
-                self?.handleExtractedChanges(allChanges)
+                self?.handleNotifiedChanges(changes)
             }
         }
     }
 
-    private func handleExtractedChanges(_ changes: [TrackedChange]) {
+    private func handleNotifiedChanges(_ changes: [SyncNotification.Change]) {
         guard !isPulling else { return }
         guard !changes.isEmpty else { return }
 
@@ -117,41 +108,6 @@ final class SyncEngine {
 
         try? context.save()
         schedulePush()
-    }
-
-    private struct TrackedChange: Sendable {
-        let entityType: SyncMetadata.EntityType
-        let entityId: UUID
-        let changeType: SyncMetadata.ChangeType
-    }
-
-    nonisolated private static func extractEntityIds(
-        from objects: Set<NSManagedObject>?,
-        changeType: SyncMetadata.ChangeType
-    ) -> [TrackedChange] {
-        guard let managedObjects = objects else {
-            return []
-        }
-
-        return managedObjects.compactMap { (object: NSManagedObject) -> TrackedChange? in
-            let entityName = object.entity.name ?? ""
-
-            let entityType: SyncMetadata.EntityType
-            switch entityName {
-            case "Account": entityType = .account
-            case "Transaction": entityType = .transaction
-            case "Category": entityType = .category
-            default: return nil
-            }
-
-            guard let id = object.value(forKey: "id") as? UUID else { return nil }
-
-            return TrackedChange(
-                entityType: entityType,
-                entityId: id,
-                changeType: changeType
-            )
-        }
     }
 
     // MARK: - Push (Local → Remote)
