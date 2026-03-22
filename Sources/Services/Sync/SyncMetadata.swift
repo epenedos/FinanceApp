@@ -31,6 +31,16 @@ final class SyncMetadata {
         case account
         case transaction
         case category
+
+        /// Push ordering to satisfy foreign key dependencies.
+        /// Accounts and categories must be pushed before transactions.
+        var pushOrder: Int {
+            switch self {
+            case .account: 0
+            case .category: 1
+            case .transaction: 2
+            }
+        }
     }
 
     // MARK: - Computed
