@@ -139,10 +139,16 @@ final class SyncEngine {
             let pendingChanges = try context.fetch(descriptor)
             guard !pendingChanges.isEmpty else { return }
 
+            // Sort by entity type to satisfy FK dependencies:
+            // accounts first, then categories, then transactions.
+            let sortedChanges = pendingChanges.sorted {
+                $0.entityTypeEnum.pushOrder < $1.entityTypeEnum.pushOrder
+            }
+
             isSyncing = true
             syncError = nil
 
-            for metadata in pendingChanges {
+            for metadata in sortedChanges {
                 do {
                     try await pushSingleChange(metadata, userId: userId, context: context)
                     metadata.isSynced = true

@@ -18,8 +18,13 @@ final class TransferViewModel {
     ) throws {
         let transferId = UUID().uuidString
 
-        let transferCategory = try findOrCreateTransferCategory(type: .expense)
-        let transferIncomeCategory = try findOrCreateTransferCategory(type: .income)
+        var newCategoryChanges: [SyncNotification.Change] = []
+        let transferCategory = try findOrCreateTransferCategory(
+            type: .expense, newChanges: &newCategoryChanges
+        )
+        let transferIncomeCategory = try findOrCreateTransferCategory(
+            type: .income, newChanges: &newCategoryChanges
+        )
 
         let defaultNotes = notes.isEmpty
             ? "Transfer from \(sourceAccount.name) to \(destinationAccount.name)"
@@ -49,13 +54,16 @@ final class TransferViewModel {
         modelContext.insert(credit)
         try modelContext.save()
 
-        SyncNotification.post(changes: [
+        SyncNotification.post(changes: newCategoryChanges + [
             .init(entityType: .transaction, entityId: debit.id, changeType: .insert),
             .init(entityType: .transaction, entityId: credit.id, changeType: .insert),
         ])
     }
 
-    private func findOrCreateTransferCategory(type: TransactionType) throws -> Category {
+    private func findOrCreateTransferCategory(
+        type: TransactionType,
+        newChanges: inout [SyncNotification.Change]
+    ) throws -> Category {
         let typeRaw = type.rawValue
         let descriptor = FetchDescriptor<Category>(
             predicate: #Predicate<Category> {
@@ -74,6 +82,7 @@ final class TransferViewModel {
             isDefault: true
         )
         modelContext.insert(category)
+        newChanges.append(.init(entityType: .category, entityId: category.id, changeType: .insert))
         return category
     }
 }
