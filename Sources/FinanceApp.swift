@@ -37,6 +37,7 @@ struct FinanceApp: App {
             RootView(
                 authManager: authManager,
                 networkMonitor: networkMonitor,
+                syncEngine: syncEngine,
                 onAuthenticated: { startSync() },
                 onSeedCategories: {
                     DefaultCategorySeeder.seedIfNeeded(
@@ -68,7 +69,7 @@ struct FinanceApp: App {
         // Reset sync/migration flags so next sign-in starts fresh
         UserDefaults.standard.removeObject(forKey: AppConstants.lastSyncTimestampKey)
         UserDefaults.standard.removeObject(forKey: AppConstants.migrationCompletedKey)
-        UserDefaults.standard.removeObject(forKey: AppConstants.categorySeededKey)
+
 
         await authManager.signOut()
     }
@@ -97,6 +98,7 @@ struct FinanceApp: App {
 private struct RootView: View {
     let authManager: AuthManager
     let networkMonitor: NetworkMonitor
+    var syncEngine: SyncEngine?
     let onAuthenticated: () -> Void
     let onSeedCategories: () -> Void
 
@@ -107,8 +109,12 @@ private struct RootView: View {
             } else if authManager.isAuthenticated {
                 ContentView()
                     .onAppear {
-                        onSeedCategories()
                         onAuthenticated()
+                    }
+                    .onChange(of: syncEngine?.initialPullCompleted) { _, completed in
+                        if completed == true {
+                            onSeedCategories()
+                        }
                     }
             } else {
                 SignInView(authManager: authManager)

@@ -26,6 +26,7 @@ final class SyncEngine {
     private(set) var isSyncing: Bool = false
     private(set) var lastSyncDate: Date?
     private(set) var syncError: String?
+    private(set) var initialPullCompleted: Bool = false
 
     private var realtimeChannel: RealtimeChannelV2?
     private var pushDebounceTask: Task<Void, Never>?
@@ -267,6 +268,7 @@ final class SyncEngine {
         guard authManager.isAuthenticated,
               let userId = authManager.userId,
               networkMonitor.isConnected else {
+            initialPullCompleted = true
             return
         }
 
@@ -311,10 +313,12 @@ final class SyncEngine {
             lastSyncDate = Date.now
             isSyncing = false
             isPulling = false
+            initialPullCompleted = true
 
         } catch {
             isSyncing = false
             isPulling = false
+            initialPullCompleted = true
             syncError = "Pull failed: \(error.localizedDescription)"
         }
     }
