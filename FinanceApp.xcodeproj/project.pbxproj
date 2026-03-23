@@ -83,6 +83,8 @@
 		EAC35CEC73059EF78C3F6D58 /* SpendingByCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992A734E99818CE9E2E0D230 /* SpendingByCategoryView.swift */; };
 		EEFAE6176EAA59BFE1844C09 /* TransactionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC982E2DB527B7B82DD9D2E2 /* TransactionFormView.swift */; };
 		F3A437B701D9D55A7BA0F398 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2BF3E84AB186AC4DC3E106 /* DashboardViewModel.swift */; };
+		F1A2B3C4D5E6F7A8B9C0D1E3 /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E2 /* SettingsTabView.swift */; };
+		F1A2B3C4D5E6F7A8B9C0D1E4 /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E2 /* SettingsTabView.swift */; };
 		F8E9C3A98E5D021752ABB425 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A85E740A87AB032DE8F2903 /* AccountViewModel.swift */; };
 		FC81346A832E671DA34E18C2 /* AccountDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77AF046245108EC8F0FCB5E /* AccountDetailView.swift */; };
 /* End PBXBuildFile section */
@@ -126,6 +128,7 @@
 		6E0802AC8872D381C533EC2B /* EntityMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityMapper.swift; sourceTree = "<group>"; };
 		71036145556962D8CF8DA6BA /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		73D0A46C7E82AA74BF0CF8EA /* SignOutAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignOutAction.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F7A8B9C0D1E2 /* SettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabView.swift; sourceTree = "<group>"; };
 		79660E617343DE13EF9FE68C /* TransferViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferViewModel.swift; sourceTree = "<group>"; };
 		7E864D998BCE9A5B139A9C20 /* SyncMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMetadata.swift; sourceTree = "<group>"; };
 		8C096909BB72F234A3DAF492 /* SankeyDiagramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SankeyDiagramView.swift; sourceTree = "<group>"; };
@@ -283,6 +286,14 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		F1A2B3C4D5E6F7A8B9C0D1E5 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F1A2B3C4D5E6F7A8B9C0D1E2 /* SettingsTabView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		9A7208E1A1DDCC0885F31A48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +302,7 @@
 				F033D283B5CC559A03153B69 /* Auth */,
 				88B5C39A015F9FAD70906EBE /* Categories */,
 				EBA5EB0E77B6C97E696A6B4F /* Dashboard */,
+				F1A2B3C4D5E6F7A8B9C0D1E5 /* Settings */,
 				44BCB3E841FBA57AD7D78260 /* Transactions */,
 				0166FB86C6861D153D96B439 /* Transfers */,
 			);
@@ -528,6 +540,7 @@
 				6AEE97C763CD8491B6387807 /* FinanceEnums.swift in Sources */,
 				48197DC18D318B1036EE5333 /* NetworkMonitor.swift in Sources */,
 				A0A8AB6407550D3F3F0B8EC1 /* SankeyDiagramView.swift in Sources */,
+				F1A2B3C4D5E6F7A8B9C0D1E3 /* SettingsTabView.swift in Sources */,
 				5D152F031438789FDF4C2F47 /* SignInView.swift in Sources */,
 				959ECF429748EC7BA1D1BCBA /* SignOutAction.swift in Sources */,
 				EAC35CEC73059EF78C3F6D58 /* SpendingByCategoryView.swift in Sources */,
@@ -571,6 +584,7 @@
 				84A23B41A1064577235D0167 /* FinanceEnums.swift in Sources */,
 				E25EDF3BEA78C5D1F9BD5A73 /* NetworkMonitor.swift in Sources */,
 				275AA26820F8E384A1F83022 /* SankeyDiagramView.swift in Sources */,
+				F1A2B3C4D5E6F7A8B9C0D1E4 /* SettingsTabView.swift in Sources */,
 				AD9EF97D4FCEDCC35EED472B /* SignInView.swift in Sources */,
 				BE8D1F2D22534C750DC09DE1 /* SignOutAction.swift in Sources */,
 				137290AE8511E5A30C8D2C6A /* SpendingByCategoryView.swift in Sources */,
