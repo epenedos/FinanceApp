@@ -59,7 +59,7 @@ struct SignInView: View {
                     description: "Your data on all your Apple devices"
                 )
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 16)
 
             Spacer()
 
@@ -102,7 +102,12 @@ struct SignInView: View {
             Spacer()
                 .frame(height: 40)
         }
+        #if os(iOS)
+        .padding(.horizontal, 12)
+        .padding(.vertical)
+        #else
         .padding()
+        #endif
         #if os(macOS)
         .frame(minWidth: 500, minHeight: 600)
         #endif
@@ -123,6 +128,7 @@ struct SignInView: View {
                 Text(description)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
