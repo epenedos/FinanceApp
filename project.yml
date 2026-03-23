@@ -49,6 +49,10 @@ targets:
       - AppBase
     dependencies:
       - package: Supabase
+    info:
+      path: Sources/Info-iOS.plist
+      properties:
+        UILaunchScreen: {}
     settings:
       base:
         TARGETED_DEVICE_FAMILY: "1,2"

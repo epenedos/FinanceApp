@@ -53,6 +53,8 @@ struct DashboardView: View {
         .navigationTitle("Dashboard")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(backgroundFill, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         #endif
         .sheet(isPresented: $showingAddTransaction) {
             TransactionFormView(transaction: nil)
