@@ -52,7 +52,7 @@ struct DashboardView: View {
         .background(backgroundFill)
         .navigationTitle("Dashboard")
         #if os(iOS)
-        .navigationBarTitleDisplayMode(isCompact ? .inline : .large)
+        .navigationBarTitleDisplayMode(.large)
         #endif
         .sheet(isPresented: $showingAddTransaction) {
             TransactionFormView(transaction: nil)
@@ -65,27 +65,23 @@ struct DashboardView: View {
     // MARK: - Compact iPhone Layout
 
     private var compactBody: some View {
-        VStack(spacing: 0) {
-            // Hero balance area — full width, no padding
-            compactBalanceHeader
-
-            VStack(spacing: 12) {
-                monthlyRow
-                quickActions
-                chartsRow
-                accountsCard
-                recentCard
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+        VStack(spacing: 12) {
+            compactBalanceCard
+            monthlyRow
+            quickActions
+            chartsRow
+            accountsCard
+            recentCard
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 32)
     }
 
-    private var compactBalanceHeader: some View {
-        VStack(spacing: 2) {
+    private var compactBalanceCard: some View {
+        VStack(spacing: 4) {
             Text("Total Balance")
-                .font(.caption.weight(.medium))
+                .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
 
             Text(CurrencyFormatter.displayString(
@@ -97,17 +93,8 @@ struct DashboardView: View {
             .contentTransition(.numericText())
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color.accentColor.opacity(0.12),
-                    Color.accentColor.opacity(0.03)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .padding(.vertical, 20)
+        .background(cardShape)
     }
 
     // MARK: - Regular / Wide Layout (iPad & macOS)
@@ -221,7 +208,7 @@ struct DashboardView: View {
                     Text("Transaction")
                 }
                 .font(.subheadline.weight(.semibold))
-                .frame(maxWidth: .infinity, minHeight: 44)
+                .frame(maxWidth: .infinity, minHeight: 40)
                 .foregroundStyle(.white)
                 .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 11))
             }
@@ -235,7 +222,7 @@ struct DashboardView: View {
                     Text("Transfer")
                 }
                 .font(.subheadline.weight(.semibold))
-                .frame(maxWidth: .infinity, minHeight: 44)
+                .frame(maxWidth: .infinity, minHeight: 40)
                 .foregroundStyle(Color.accentColor)
                 .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 11))
             }
@@ -255,7 +242,7 @@ struct DashboardView: View {
                     Text("Money Flow")
                 }
                 .font(.subheadline.weight(.medium))
-                .frame(maxWidth: .infinity, minHeight: 38)
+                .frame(maxWidth: .infinity, minHeight: 34)
                 .foregroundStyle(.primary)
                 .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
             }
@@ -269,7 +256,7 @@ struct DashboardView: View {
                     Text("Spending")
                 }
                 .font(.subheadline.weight(.medium))
-                .frame(maxWidth: .infinity, minHeight: 38)
+                .frame(maxWidth: .infinity, minHeight: 34)
                 .foregroundStyle(.primary)
                 .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
             }

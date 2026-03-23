@@ -5,8 +5,12 @@ struct DefaultCategorySeeder {
     private init() {}
 
     static func seedIfNeeded(modelContext: ModelContext) {
-        let hasSeeded = UserDefaults.standard.bool(forKey: AppConstants.categorySeededKey)
-        guard !hasSeeded else { return }
+        // Check the database for existing categories instead of a device-local flag.
+        // This prevents duplicate seeding across devices — if categories were already
+        // pulled from Supabase sync, we skip seeding entirely.
+        let descriptor = FetchDescriptor<Category>()
+        let existingCount = (try? modelContext.fetchCount(descriptor)) ?? 0
+        guard existingCount == 0 else { return }
 
         let expenseCategories: [(String, String, String)] = [
             ("Food & Dining", "fork.knife", "#FF6B6B"),
@@ -36,6 +40,8 @@ struct DefaultCategorySeeder {
             ("Other", "ellipsis.circle", "#9E9E9E"),
         ]
 
+        var insertedCategories: [Category] = []
+
         for (name, icon, color) in expenseCategories {
             let category = Category(
                 name: name,
@@ -45,6 +51,7 @@ struct DefaultCategorySeeder {
                 isDefault: true
             )
             modelContext.insert(category)
+            insertedCategories.append(category)
         }
 
         for (name, icon, color) in incomeCategories {
@@ -56,11 +63,19 @@ struct DefaultCategorySeeder {
                 isDefault: true
             )
             modelContext.insert(category)
+            insertedCategories.append(category)
         }
 
         do {
             try modelContext.save()
-            UserDefaults.standard.set(true, forKey: AppConstants.categorySeededKey)
+            let changes = insertedCategories.map { category in
+                SyncNotification.Change(
+                    entityType: .category,
+                    entityId: category.id,
+                    changeType: .insert
+                )
+            }
+            SyncNotification.post(changes: changes)
         } catch {
             print("Failed to seed default categories: \(error)")
         }

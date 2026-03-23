@@ -28,6 +28,7 @@ final class TransactionViewModel {
         )
         modelContext.insert(transaction)
         try modelContext.save()
+        SyncNotification.post(entityType: .transaction, entityId: transaction.id, changeType: .insert)
     }
 
     func updateTransaction(
@@ -46,14 +47,17 @@ final class TransactionViewModel {
         transaction.account = account
         transaction.category = category
         try modelContext.save()
+        SyncNotification.post(entityType: .transaction, entityId: transaction.id, changeType: .update)
     }
 
     func deleteTransaction(_ transaction: Transaction) throws {
         if let transferId = transaction.transferId {
             try deleteTransferPair(transferId: transferId)
         } else {
+            let transactionId = transaction.id
             modelContext.delete(transaction)
             try modelContext.save()
+            SyncNotification.post(entityType: .transaction, entityId: transactionId, changeType: .delete)
         }
     }
 
@@ -62,9 +66,14 @@ final class TransactionViewModel {
             predicate: #Predicate<Transaction> { $0.transferId == transferId }
         )
         let paired = try modelContext.fetch(descriptor)
+        let pairedIds = paired.map(\.id)
         for transaction in paired {
             modelContext.delete(transaction)
         }
         try modelContext.save()
+        let changes = pairedIds.map { id in
+            SyncNotification.Change(entityType: .transaction, entityId: id, changeType: .delete)
+        }
+        SyncNotification.post(changes: changes)
     }
 }
